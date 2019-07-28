@@ -178,7 +178,8 @@ class Adapter(object):
     @pairabletimeout.setter
     def pairabletimeout(self, new_timeout):
         self.adapter_props.Set(constants.ADAPTER_INTERFACE,
-                               'PairableTimeout', new_timeout)
+                               'PairableTimeout', dbus.UInt32(new_timeout,
+                                                              variant_level=1))
 
     @property
     def discoverable(self):
@@ -200,7 +201,9 @@ class Adapter(object):
     @discoverabletimeout.setter
     def discoverabletimeout(self, new_timeout):
         self.adapter_props.Set(constants.ADAPTER_INTERFACE,
-                               'DiscoverableTimeout', new_timeout)
+                               'DiscoverableTimeout',
+                               dbus.UInt32(new_timeout,
+                                           variant_level=1))
 
     @property
     def discovering(self):
