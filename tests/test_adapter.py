@@ -38,7 +38,7 @@ class TestBluezeroAdapter(unittest.TestCase):
         Stop the module patching.
         """
         pass
-    
+
     def test_list_adapters(self):
         """
         Test ``Adapter.list_adapters()``
