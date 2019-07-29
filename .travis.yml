@@ -4,10 +4,10 @@ sudo: required
 
 # look at https://github.com/pypa/pip for examples?
 # https://docs.travis-ci.com/user/multi-os/
-python:
-  - "3.6"
-virtualenv:
-  system_site_packages: true
+# python:
+#   - "3.6"
+# virtualenv:
+#   system_site_packages: true
 # matrix:
   # include:
     # - python: 2.7
