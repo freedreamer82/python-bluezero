@@ -9,7 +9,6 @@ import subprocess
 import sys
 from time import sleep
 import unittest
-from bluezero import constants
 from bluezero import adapter
 
 
@@ -24,20 +23,19 @@ class TestBluezeroAdapter(unittest.TestCase):
         """
         self.dut_uuid = '00:AA:01:00:00:23'
 
-        env = os.environ.copy()
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.p = subprocess.Popen(['sudo',
                                    '{}/emulator/btvirt'.format(dir_path),
-                                   '-l2'], env=env)
+                                   '-l2'], preexec_fn=os.setpgrp)
         # Wait for the service to become available
-        sleep(0.1)
+        sleep(0.01)
         self.dongle = adapter.Adapter(self.dut_uuid)
 
     def tearDown(self):
         """
         Stop the module patching.
         """
-        pass
+        subprocess.run(["sudo", "kill", str(self.p.pid)])
 
     def test_list_adapters(self):
         """
