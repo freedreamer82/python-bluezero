@@ -5,7 +5,7 @@ dist: trusty
 # look at https://github.com/pypa/pip for examples?
 # https://docs.travis-ci.com/user/multi-os/
 python:
-  - "3.5"
+  - "3.4"
 virtualenv:
   system_site_packages: true
 # matrix:
