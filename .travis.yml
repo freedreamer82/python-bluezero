@@ -1,52 +1,71 @@
-# It is not really needed, other than for showing correct language tag in Travis CI build log.
 language: python
-
 sudo: required
+dist: trusty
 
-services:
-  - docker
-
-env: SH="docker exec -t ubuntu-test bash -c"
-
-before_install:
-  - docker run -d --name ubuntu-test -e LC_ALL="en_US.UTF-8" -e LANG="en_US.UTF-8" -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
-  - docker ps
-
+# look at https://github.com/pypa/pip for examples?
+# https://docs.travis-ci.com/user/multi-os/
+python:
+  - "3.5"
+virtualenv:
+  system_site_packages: true
+# matrix:
+  # include:
+    # - python: 2.7
+    #   env: PYTHONPATH="$PYTHONPATH:/usr/lib/python2.7/dist-packages"
+    # - python: 3.3
+    #   env: PYTHONPATH="$PYTHONPATH:/usr/lib/python3/dist-packages"
+addons:
+  apt:
+    packages:
+      - bluez
+      - python-dbus
+      - python3-dbus
+      - python-gi
+      - python3-gi
+# before_install:
+#   sudo apt-get update -qq
+#   sudo apt-get bluez -qq
+#   sudo apt-get install -qq python-dbus python3-dbus python-gi python3-gi
+  # install dbusmock from github
+  # ./install_dbusmock.sh
 install:
-  - $SH "apt-get update"
-  - $SH "apt-get install -y locales"
-  - $SH "locale-gen en_US.UTF-8"
-  - $SH "apt-get install -y python3"
-  - $SH "apt-get install -y python3-pip"
-  - $SH "apt-get install -y python-dbus"
-  - $SH "apt-get install -y python3-dbus"
-  - $SH "apt-get install -y python-gi"
-  - $SH "apt-get install -y python3-gi"
-  - $SH "python3 -m pip install -q --upgrade pip"
-  - $SH "python3 -m pip install -q pycodestyle"
-  - $SH "python3 -m pip install -q 'coverage>4.0,<4.4'"
-  - $SH "python3 -m pip install -q codecov"
-
+  # - pip install --upgrade pip
+  - pip install pycodestyle
+  - pip install 'coverage>4.0,<4.4'
+  - pip install codecov
+  # Install released version of dbusmock
+  # - pip install python-dbusmock
+before_script:
+  # - .travis/setup.sh
+  # - echo "Travis Python Version ***********"
+  # - echo $TRAVIS_PYTHON_VERSION
+  # - echo $PYTHONPATH
+  # If dbusmock installed from github
+  # - export PYTHONPATH=$PYTHONPATH:/tmp/python-dbusmock-bluez_gatt
 script:
   # Shared
-  - $SH "coverage run -m unittest -v tests.test_tools"
-  - $SH "coverage run --append -m unittest -v tests.test_dbus_tools"
-  - $SH "coverage run --append -m unittest -v tests.test_async_tools"
+  - coverage run -m unittest -v tests.test_tools
+  - coverage run --append -m unittest -v tests.test_dbus_tools
+  - coverage run --append -m unittest -v tests.test_async_tools
   # Level 100
-  - $SH "coverage run --append -m unittest -v tests.test_adapter"
-  - $SH "coverage run --append -m unittest -v tests.test_advertisement"
-  - $SH "coverage run --append -m unittest -v tests.test_device"
-  - $SH "coverage run --append -m unittest -v tests.test_gatt"
+  - coverage run --append -m unittest -v tests.test_adapter
+  - coverage run --append -m unittest -v tests.test_advertisement
+  - coverage run --append -m unittest -v tests.test_device
+  - coverage run --append -m unittest -v tests.test_gatt
   # Level 10
-  - $SH "coverage run --append -m unittest -v tests.test_broadcaster"
-  - $SH "coverage run --append -m unittest -v tests.test_central"
-  - $SH "coverage run --append -m unittest -v tests.test_peripheral"
+  - coverage run --append -m unittest -v tests.test_broadcaster
+  - coverage run --append -m unittest -v tests.test_central
+  - coverage run --append -m unittest -v tests.test_peripheral
   # Level 1
-  - $SH "coverage run --append -m unittest -v tests.test_eddystone"
-  - $SH "coverage run --append -m unittest -v tests.test_microbit"
+  - coverage run --append -m unittest -v tests.test_eddystone
+  - coverage run --append -m unittest -v tests.test_microbit
   # Examples (Level 1)
-  - $SH "coverage run --append -m unittest -v tests.test_adapter_example"
+  - coverage run --append -m unittest -v tests.test_adapter_example
 
+
+  - "pycodestyle bluezero"
+  - "pycodestyle examples"
+  # - "pycodestyle tests"
 after_success:
   #
-  - $SH "codecov"
+  - codecov
