@@ -1,10 +1,10 @@
 language: python
 sudo: required
-
+dist: bionic
 # look at https://github.com/pypa/pip for examples?
 # https://docs.travis-ci.com/user/multi-os/
 python:
-  - "3.5"
+  - "3.6"
 virtualenv:
   system_site_packages: true
 # matrix:
